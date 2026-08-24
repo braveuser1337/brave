@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+(async () => {
+  console.log(`Is Brave (JS): ${await navigator.brave?.isBrave()}`);
+  try {
+    console.log("User Agent Data (JS):", await navigator.userAgentData.getHighEntropyValues(["fullVersionList"]));
+  } catch (error) {
+    console.error(`getHighEntropyValues failed: ${error}`);
+  }
+  
+  if (window.Worker) {
+    try {
+      const myWorker = new Worker("worker.js");
+      myWorker.postMessage(null);
+    } catch (error) {
+      console.error(`Worker failed: ${error}`);
+    }
+  } else {
+    console.log("Worker not available!");
+  }
+
+  const canvas = document.createElement("canvas");
+  const gl = canvas.getContext("webgl");
+  if (gl) {
+    const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+    if (debugInfo) {
+        const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+        const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+        console.log(`Is Brave (WebGL): ${vendor === "Brave" || renderer === "Brave"}`);
+    } else {
+    console.log("WebGL debug info not available!");
+  }
+  } else {
+    console.log("WebGL not available!");
+  }
+})();
+</script>
+</head>
+</html>
